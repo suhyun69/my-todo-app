@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import AuthSection from '@/components/AuthSection';
 import TodoSection from '@/components/TodoSection';
+import ProfileSection from '@/components/ProfileSection';
 
 export default function Home() {
   const [currentSession, setCurrentSession] = useState(null);
@@ -12,7 +13,7 @@ export default function Home() {
       <AuthSection onAuthStateChange={(session) => {
         setCurrentSession(session);
       }} />
-      
+      <ProfileSection session={currentSession} />
       {currentSession && (
         <TodoSection session={currentSession} />
       )}
