@@ -12,12 +12,8 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center p-8">
       <AuthSection 
-        onAuthStateChange={(session) => {
-          setCurrentSession(session);
-        }}
-        onProfileChange={(profile) => {
-          setProfile(profile);
-        }} 
+        onAuthStateChange={setCurrentSession}
+        onProfileChange={setProfile}
       />
       {/* <ProfileSection session={currentSession} /> */}
       {currentSession && (
