@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
-export default function TodoSection({ session }) {
+export default function TodoSection({ session, profile }) {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState('');
   const [editingId, setEditingId] = useState(null);
@@ -92,6 +92,8 @@ export default function TodoSection({ session }) {
   return (
     <>
       <h1 className="text-4xl font-bold mb-4">Todo List</h1>
+
+      {/* <p>{profile?.nickname}님, 안녕하세요</p> */}
       
       {/* Todo 입력 폼 */}
       <form onSubmit={handleSubmit} className="w-full max-w-2xl mb-8">

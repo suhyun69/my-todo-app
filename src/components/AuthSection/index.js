@@ -3,8 +3,9 @@ import { supabase } from '@/lib/supabase';
 import AuthModal from './AuthModal';
 import AuthButtons from './AuthButtons';
 
-export default function AuthSection({ onAuthStateChange }) {
+export default function AuthSection({ onAuthStateChange, onProfileChange }) {
   const [session, setSession] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [authLoading, setAuthLoading] = useState(false);
   const [authModal, setAuthModal] = useState({ isOpen: false, mode: null });
 
@@ -26,6 +27,33 @@ export default function AuthSection({ onAuthStateChange }) {
     // 3. 컴포넌트 언마운트 시 구독 해제
     return () => subscription.unsubscribe();
   }, [onAuthStateChange]);
+
+  useEffect(() => {
+    // 세션이 있을 때만 프로필 조회
+    if (session?.user?.id) {
+      fetchProfile(session.user.id);
+    } else {
+      setProfile(null); // 세션이 없으면 프로필 초기화
+    }
+  }, [session?.user?.id]);
+
+  const fetchProfile = async (user_id) => {
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user_id)
+        .single();
+
+      if (error) throw error;
+      setProfile(profile || null);
+      onProfileChange?.(profile || null); // 프로필 변경 시 상위 컴포넌트에 전달
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      setProfile(null);
+      onProfileChange?.(null);
+    }
+  };
 
   // 회원가입 핸들러
   const handleSignUp = async (e) => {
@@ -108,7 +136,7 @@ export default function AuthSection({ onAuthStateChange }) {
 
       {session && (
         <p className="text-lg text-gray-600 mb-8">
-          {session.user.id}님, 안녕하세요
+          {profile?.nickname}님, 안녕하세요
         </p>
       )}
 
